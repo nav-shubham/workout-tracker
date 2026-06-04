@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker — Elite Web Edition</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Premium Neon Ambient Background Glows -->
+    <div class="bg-glow bg-glow-primary"></div>
+    <div class="bg-glow bg-glow-accent"></div>
+
+    <header class="app-header">
+        <div class="header-logo">
+            <span class="logo-accent">WORKOUT</span> TRACKER
+        </div>
+        <nav class="app-nav">
+            <button id="nav-btn-setup" class="nav-tab active" data-target="setup-page">
+                <span class="nav-tab-icon">⚙️</span>Setup
+            </button>
+            <button id="nav-btn-timer" class="nav-tab" data-target="timer-page">
+                <span class="nav-tab-icon">⏱️</span>Timer
+            </button>
+            <button id="nav-btn-history" class="nav-tab" data-target="history-page">
+                <span class="nav-tab-icon">📊</span>History
+            </button>
+        </nav>
+    </header>
+
+    <main class="app-main">
+        <!-- ════════════════ SETUP PAGE ════════════════ -->
+        <section id="setup-page" class="app-page active">
+            <div class="page-grid">
+                <div class="left-column">
+                    <!-- Routine Header Glass Card -->
+                    <div class="glass-card header-card">
+                        <div class="card-title-row">
+                            <h2>Configure Routine</h2>
+                            <div class="combobox-container">
+                                <input type="text" id="routine-input" placeholder="Select or Name Routine..." list="routine-list" autocomplete="off">
+                                <datalist id="routine-list"></datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercises Builder Glass Card -->
+                    <div class="glass-card builder-card">
+                        <div class="builder-header">
+                            <span class="col-lbl col-name">Exercise Name</span>
+                            <span class="col-lbl col-sets">Sets</span>
+                            <span class="col-lbl col-remove"></span>
+                        </div>
+                        <div id="exercise-rows-container" class="builder-list">
+                            <!-- Dynamic rows will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <!-- Action Panel Glass Card -->
+                    <div class="glass-card action-card">
+                        <h3>Actions</h3>
+                        <div class="action-buttons">
+                            <button id="btn-save-preset" class="btn btn-accent btn-large">
+                                <span class="btn-glow"></span>
+                                Save Preset
+                            </button>
+                            <button id="btn-add-exercise" class="btn btn-secondary btn-large">
+                                + Add Exercise
+                            </button>
+                            <button id="btn-start-workout" class="btn btn-primary btn-large font-emphasis">
+                                Start Workout →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════ TIMER PAGE ════════════════ -->
+        <section id="timer-page" class="app-page">
+            <div class="timer-container">
+                <!-- Large Status and Timer Plate -->
+                <div class="glass-card timer-card">
+                    <h2 id="timer-status">Ready to Start</h2>
+                    <div id="timer-time" class="timer-display">00:00:00.0</div>
+                    <div id="timer-lap" class="timer-lap-display">00:00:00.000</div>
+                </div>
+
+                <!-- Stopwatch Controls -->
+                <div class="timer-controls">
+                    <button id="btn-control-start" class="btn-circle btn-success">
+                        <span class="circle-btn-icon">▶</span>
+                        <span class="circle-btn-text">Start</span>
+                    </button>
+                    <button id="btn-control-split" class="btn-circle btn-warning" disabled>
+                        <span class="circle-btn-icon">⏱️</span>
+                        <span class="circle-btn-text">Split</span>
+                    </button>
+                    <button id="btn-control-save" class="btn-circle btn-primary" disabled>
+                        <span class="circle-btn-icon">💾</span>
+                        <span class="circle-btn-text">Save</span>
+                    </button>
+                    <button id="btn-control-reset" class="btn-circle btn-reset" disabled>
+                        <span class="circle-btn-icon">🔄</span>
+                        <span class="circle-btn-text">Reset</span>
+                    </button>
+                </div>
+
+                <!-- Active Splits Data Table -->
+                <div class="glass-card splits-card">
+                    <div class="splits-card-header">
+                        <h3>Workout Log</h3>
+                        <span class="splits-progress-badge" id="splits-progress-badge">0 / 0 Sets</span>
+                    </div>
+                    <div class="splits-header">
+                        <span class="split-col-lbl col-idx">#</span>
+                        <span class="split-col-lbl col-label">Exercise</span>
+                        <span class="split-col-lbl col-dur">Duration</span>
+                        <span class="split-col-lbl col-tot">Total</span>
+                        <span class="split-col-lbl col-reps">Reps</span>
+                    </div>
+                    <div id="splits-list-container" class="splits-list">
+                        <!-- Dynamic splits logged here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════ HISTORY PAGE ════════════════ -->
+        <section id="history-page" class="app-page">
+            <div class="history-container">
+                <!-- Filter bar glass card -->
+                <div class="glass-card filters-card">
+                    <div class="filter-inputs">
+                        <div class="date-input-group">
+                            <label for="filter-date-from">From:</label>
+                            <input type="text" id="filter-date-from" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="date-input-group">
+                            <label for="filter-date-to">To:</label>
+                            <input type="text" id="filter-date-to" placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="btn-filter-history" class="btn btn-primary">🔍 Filter</button>
+                        <button id="btn-export-csv" class="btn btn-success">⬇ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- History list of sessions -->
+                <div id="history-sessions-container" class="history-list">
+                    <!-- Dynamic history panels here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Workout Tracker Elite Web — Synthesized Sound Chimes Activated</p>
+    </footer>
+
+    <!-- App JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
