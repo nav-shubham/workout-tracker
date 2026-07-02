@@ -1,50 +1,30 @@
-# Workout Tracker - Elite Edition
+# Workout Tracker
 
-A dual-interface workout tracking application featuring a premium Python desktop client and a responsive web dashboard. It helps you design workout templates, track set completions, time your rests with audio feedback, and visualize historical data.
+A premium web-based workout tracking application designed for performance. It helps you design workout templates, track set completions, time your rests with audio feedback, and visualize historical data.
 
 ---
 
 ## ✨ Features
 
-### 🖥️ 1. Python Desktop Application (`tkinter` + `Pillow`)
-- **Dark Mode Design System**: Translucent-style card borders, clean modern headings, and glowing status indicators.
-- **Dynamic Viewport Resizing**: Responsive Tkinter panels that scale dynamically.
-- **Audio Chimes**: Built-in sound chimes (using `winsound` on Windows) for workout start, rest timers, and completion alerts.
-- **Template Builder**: Default and custom templates for up to 6 different workout days.
-- **JSON Storage**: Logs session progress inside `~/.workout_tracker/data.json`.
-
-### 🌐 2. Web Dashboard (`web_app/`)
-- **Interactive UI**: Fully local HTML/CSS/JS dashboard that requires zero server-side setup.
-- **Web Audio API Synth**: Custom synthesized bell sounds (ascending/descending chime chords) generated dynamically in the browser.
-- **LocalStorage Persistence**: Saves configuration and history directly inside browser memory.
-- **Timer Engine**: Automated intervals to time your rest periods between sets.
+- **Athletic Dark Design System**: A high-contrast, modern carbon-charcoal and active safety orange theme designed for maximum visibility and visual appeal during workouts.
+- **Unified Custom Preset Combobox**: A custom-built combobox widget that displays saved routines in a neat dropdown, allowing you to name new presets or select existing ones without fear of wiping your configured exercises.
+- **LocalStorage Persistence**: Saves configuration, presets, and history directly inside the browser's persistent storage.
+- **Web Audio API Chime Synth**: Custom-synthesized bell chords generated dynamically in the browser for starting exercises, rest periods, and workout completion.
+- **Set Timer Engine**: Automated stopwatch and rest interval tracker with live split logging.
+- **History Visualizer & Export**: Filter history records by date range, delete old entries, or download your history as a CSV spreadsheet.
 
 ---
 
 ## 📁 Project Structure
 
-- `src/workout_tracker_v2.py` - Core Python Desktop application.
-- `web_app/` - Standalone web client interface.
-  - `index.html` - Premium glassmorphic workspace page.
-  - `styles.css` - Custom styling theme.
-  - `app.js` - Client logic and Web Audio API synthesizer.
-- `pyproject.toml` - Python dependency manifest (managing `pillow`).
+- `web_app/` - Standalone web application.
+  - [index.html](file:///D:/PythonTools/workout_tracker/web_app/index.html) - Application interface.
+  - [styles.css](file:///D:/PythonTools/workout_tracker/web_app/styles.css) - Custom modern stylesheet.
+  - [app.js](file:///D:/PythonTools/workout_tracker/web_app/app.js) - Application logic and sound chime synthesizer.
 
 ---
 
-## 🚀 Setup & Execution
+## 🚀 Execution
 
-### Running the Desktop Application
-1. Install dependencies and activate the virtual environment:
-   ```bash
-   uv venv
-   uv sync
-   ```
-2. Launch the desktop tracker:
-   ```bash
-   uv run python src/workout_tracker_v2.py
-   ```
-
-### Running the Web Application
-1. Double-click [index.html](file:///D:/PythonTools/workout_tracker/web_app/index.html) or host it with any local server (e.g. `npx serve web_app` or Python's `http.server`).
-2. The web interface will open in your browser, fully functional offline.
+1. Double-click [index.html](file:///D:/PythonTools/workout_tracker/web_app/index.html) to run it locally in any modern web browser.
+2. Alternatively, host the `web_app` directory using any lightweight server (e.g. `npx serve web_app` or `python -m http.server` inside the directory).

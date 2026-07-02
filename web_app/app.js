@@ -1,6 +1,60 @@
 /* ==========================================================================
    CONFIG & DATA STORES (LOCAL STORAGE PERSISTENCE)
    ========================================================================== */
+const WEEK12_TEMPLATES = {
+    "W12D1: Pull-Up Power + Core": [
+        { name: "Dead hang (30s) / Scapular / Pull-aparts (Warm-up)", sets: 2 },
+        { name: "Pull-ups (Explosive ROM, chest tall)", sets: 6 },
+        { name: "Negative pull-ups (6s down)", sets: 3 },
+        { name: "Band rows", sets: 3 },
+        { name: "Top hold (15s) / Active hang (25s) (Skill)", sets: 3 },
+        { name: "Mountain climbers & High knees (Finisher)", sets: 3 }
+    ],
+    "W12D2: L-Sit + Core Compression": [
+        { name: "Wrist prep & Hip stretch (Warm-up)", sets: 1 },
+        { name: "L-sit / advanced tuck hold (15-25s)", sets: 5 },
+        { name: "Parallettes knee raises", sets: 4 },
+        { name: "Hanging knee raises", sets: 4 },
+        { name: "Side plank hold (45s)", sets: 3 },
+        { name: "Tuck compression pulses (Skill)", sets: 3 },
+        { name: "Ab vacuum (45s) (Finisher)", sets: 3 }
+    ],
+    "W12D3: Push + Handstand": [
+        { name: "Wrist prep & Scap push-ups (Warm-up)", sets: 1 },
+        { name: "Parallettes push-ups (deep)", sets: 4 },
+        { name: "Pike push-ups", sets: 4 },
+        { name: "Band overhead press", sets: 3 },
+        { name: "Wall handstand hold (30s) (Skill)", sets: 4 },
+        { name: "Handstand shoulder taps (wall) (Skill)", sets: 3 },
+        { name: "Jump squats & Burpees (Finisher)", sets: 3 }
+    ],
+    "W12D4: Legs + Explosive": [
+        { name: "Leg swings / Hip circles / Squats (Warm-up)", sets: 1 },
+        { name: "Bulgarian split squats", sets: 4 },
+        { name: "Band squats", sets: 4 },
+        { name: "Reverse lunges", sets: 3 },
+        { name: "Band Romanian deadlift", sets: 3 },
+        { name: "Pistol squat to chair (Skill)", sets: 4 },
+        { name: "Jump squats & High knees (Finisher)", sets: 4 }
+    ],
+    "W12D5: Pull-Up Vol + Lat Width": [
+        { name: "Dead hang (30s) / Scap pull-ups (Warm-up)", sets: 1 },
+        { name: "Pull-ups (AMRAP -1)", sets: 5 },
+        { name: "Inverted rows", sets: 4 },
+        { name: "Band straight-arm pulldowns", sets: 3 },
+        { name: "Scapular pull-ups (Skill)", sets: 3 },
+        { name: "Hollow hold (40s) (Finisher)", sets: 4 }
+    ],
+    "W12D6: Full Body Athletic": [
+        { name: "Pull-ups / Push-ups / Squats / Knee raises / Plank", sets: 4 },
+        { name: "Handstand / L-sit / Pistol squat practice (10m)", sets: 1 },
+        { name: "Nasal breathing (5 min) (Finisher)", sets: 1 }
+    ],
+    "W12D7: Recovery + Mobility": [
+        { name: "30m walk / Stretch / Passive hang / Wrist & Hip", sets: 1 }
+    ]
+};
+
 const DEFAULT_TEMPLATES = {
     "Pull-up Day": [
         { name: "Pull-ups (Regular)", sets: 4 },
@@ -16,7 +70,8 @@ const DEFAULT_TEMPLATES = {
         { name: "Bodyweight Squats", sets: 4 },
         { name: "Forward Lunges", sets: 3 },
         { name: "Single-Leg Calf Raises", sets: 3 }
-    ]
+    ],
+    ...WEEK12_TEMPLATES
 };
 
 // Initialize or Load Local Storage
@@ -24,6 +79,27 @@ let appData = {
     templates: { ...DEFAULT_TEMPLATES },
     history: []
 };
+
+// Storage state
+let storageMode = "localStorage"; // "localStorage", "server", "file"
+let linkedFileHandle = null;
+
+// DOM references for Storage manager
+const storageStatusText = document.getElementById("storage-status-text");
+const linkedFileInfo = document.getElementById("linked-file-info");
+const linkedFileName = document.getElementById("linked-file-name");
+const btnLinkFile = document.getElementById("btn-link-file");
+
+function injectWeek12Templates() {
+    let modified = false;
+    for (const [key, value] of Object.entries(WEEK12_TEMPLATES)) {
+        if (!appData.templates[key]) {
+            appData.templates[key] = value;
+            modified = true;
+        }
+    }
+    return modified;
+}
 
 function loadStorageData() {
     const saved = localStorage.getItem("elite_workout_tracker_data");
@@ -36,10 +112,162 @@ function loadStorageData() {
     } else {
         saveStorageData();
     }
+    
+    // Inject Week 12 templates if missing and save
+    if (injectWeek12Templates()) {
+        saveStorageData(true);
+    }
 }
 
-function saveStorageData() {
+async function saveStorageData(skipExternal = false) {
+    // Always save to localStorage as a fallback
     localStorage.setItem("elite_workout_tracker_data", JSON.stringify(appData));
+    
+    if (skipExternal) return;
+    
+    if (storageMode === "server") {
+        await saveToServer();
+    } else if (storageMode === "file" && linkedFileHandle) {
+        await saveToLinkedFile();
+    }
+}
+
+async function saveToServer() {
+    try {
+        const response = await fetch('/api/data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(appData)
+        });
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+        }
+        console.log("Successfully synced to local server.");
+        storageStatusText.textContent = "Connected (Local Server)";
+        storageStatusText.className = "status-connected";
+    } catch (err) {
+        console.error("Error saving to local server:", err);
+        storageStatusText.textContent = "Connected (Sync Error)";
+        storageStatusText.className = "status-offline";
+    }
+}
+
+async function saveToLinkedFile() {
+    if (!linkedFileHandle) return;
+    try {
+        const writable = await linkedFileHandle.createWritable();
+        await writable.write(JSON.stringify(appData, null, 4));
+        await writable.close();
+        console.log("Successfully saved to linked file.");
+    } catch (err) {
+        console.error("Error saving to linked file:", err);
+        alert("Permission denied or error writing to linked file. Reverting to browser cache.");
+        storageMode = "localStorage";
+        storageStatusText.textContent = "Offline (Browser cache)";
+        storageStatusText.className = "status-offline";
+        linkedFileInfo.style.display = "none";
+    }
+}
+
+async function checkServerConnection() {
+    try {
+        const response = await fetch('/api/data', { method: 'GET', cache: 'no-cache' });
+        if (response.ok) {
+            const serverData = await response.json();
+            storageMode = "server";
+            storageStatusText.textContent = "Connected (Local Server)";
+            storageStatusText.className = "status-connected";
+            btnLinkFile.style.display = "none"; // Hide link local file button if local server is run
+            
+            // If server has data, load it. Otherwise, initialize server with localStorage data.
+            if (serverData && (serverData.templates || serverData.history)) {
+                appData = {
+                    templates: serverData.templates || { ...DEFAULT_TEMPLATES },
+                    history: serverData.history || []
+                };
+            } else {
+                await saveStorageData(true);
+            }
+            
+            // Inject Week 12 templates if missing and sync back to server
+            const wasModified = injectWeek12Templates();
+            
+            // Refresh UI
+            refreshRoutineOptions();
+            loadRoutineFromInput();
+            if (pages.history.classList.contains("active")) {
+                renderHistory();
+            }
+            
+            if (wasModified) {
+                await saveStorageData();
+            }
+            return true;
+        }
+    } catch (e) {
+        console.log("No local backend server detected. Storage operating in browser mode.");
+    }
+    return false;
+}
+
+async function linkLocalFile() {
+    if (!('showOpenFilePicker' in window)) {
+        alert("File System Access API is not supported in this browser or context. For direct local file sync, please run the Python local server (python server.py) or host this page via localhost.");
+        return;
+    }
+    
+    try {
+        const [handle] = await window.showOpenFilePicker({
+            types: [{
+                description: 'JSON Files',
+                accept: {
+                    'application/json': ['.json']
+                }
+            }],
+            multiple: false
+        });
+        
+        linkedFileHandle = handle;
+        const file = await handle.getFile();
+        const text = await file.text();
+        
+        if (text.trim()) {
+            try {
+                const parsed = JSON.parse(text);
+                if (parsed.templates || parsed.history) {
+                    appData = {
+                        templates: parsed.templates || { ...DEFAULT_TEMPLATES },
+                        history: parsed.history || []
+                    };
+                }
+            } catch (e) {
+                alert("File content is empty or invalid JSON. Starting sync using current tracker data.");
+            }
+        }
+        
+        storageMode = "file";
+        storageStatusText.textContent = "Linked File (Sync)";
+        storageStatusText.className = "status-linked";
+        linkedFileInfo.style.display = "block";
+        linkedFileName.textContent = file.name;
+        
+        // Save current data state into the new linked file
+        await saveStorageData();
+        
+        // Refresh UI
+        refreshRoutineOptions();
+        loadRoutineFromInput();
+        if (pages.history.classList.contains("active")) {
+            renderHistory();
+        }
+        
+        alert(`Successfully linked to "${file.name}". All modifications will be synced automatically.`);
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            console.error(err);
+            alert("Error linking file: " + err.message);
+        }
+    }
 }
 
 /* ==========================================================================
@@ -176,15 +404,87 @@ Object.keys(navButtons).forEach(key => {
    SETUP PAGE CONTROLLER
    ========================================================================== */
 const routineInput = document.getElementById("routine-input");
-const routineList = document.getElementById("routine-list");
+const comboboxToggleBtn = document.getElementById("combobox-toggle-btn");
+const comboboxDropdown = document.getElementById("combobox-dropdown");
 const exerciseRowsContainer = document.getElementById("exercise-rows-container");
 
+function toggleComboboxDropdown(show) {
+    const isVisible = comboboxDropdown.classList.contains("show");
+    const shouldShow = show !== undefined ? show : !isVisible;
+    if (shouldShow) {
+        comboboxDropdown.classList.add("show");
+        comboboxToggleBtn.classList.add("active");
+    } else {
+        comboboxDropdown.classList.remove("show");
+        comboboxToggleBtn.classList.remove("active");
+    }
+}
+
+function hideComboboxDropdown() {
+    comboboxDropdown.classList.remove("show");
+    comboboxToggleBtn.classList.remove("active");
+}
+
+function deletePreset(presetName, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    if (confirm(`Are you sure you want to delete the preset "${presetName}"?`)) {
+        delete appData.templates[presetName];
+        saveStorageData();
+        refreshRoutineOptions();
+        
+        if (routineInput.value.trim() === presetName) {
+            routineInput.value = "";
+            exerciseRowsContainer.innerHTML = "";
+            addExerciseRow("", 3);
+        }
+    }
+}
+
 function refreshRoutineOptions() {
-    routineList.innerHTML = "";
-    Object.keys(appData.templates).forEach(key => {
-        const option = document.createElement("option");
-        option.value = key;
-        routineList.appendChild(option);
+    comboboxDropdown.innerHTML = "";
+    const templates = Object.keys(appData.templates);
+    
+    if (templates.length === 0) {
+        const item = document.createElement("div");
+        item.className = "dropdown-item empty";
+        item.textContent = "No presets saved";
+        comboboxDropdown.appendChild(item);
+        return;
+    }
+    
+    templates.forEach(key => {
+        const item = document.createElement("div");
+        item.className = "dropdown-item";
+        if (key === routineInput.value.trim()) {
+            item.classList.add("active");
+        }
+        
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "item-text";
+        labelSpan.textContent = key;
+        item.appendChild(labelSpan);
+        
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn-delete-preset";
+        deleteBtn.innerHTML = "&times;";
+        deleteBtn.title = "Delete Preset";
+        deleteBtn.addEventListener("click", (e) => {
+            deletePreset(key, e);
+        });
+        item.appendChild(deleteBtn);
+        
+        item.addEventListener("click", (e) => {
+            if (!e.target.closest(".btn-delete-preset")) {
+                routineInput.value = key;
+                loadRoutineFromInput();
+                hideComboboxDropdown();
+            }
+        });
+        comboboxDropdown.appendChild(item);
     });
 }
 
@@ -311,9 +611,23 @@ document.getElementById("btn-start-workout").addEventListener("click", () => {
     showPage("timer");
 });
 
-// Routine Input handlers
-routineInput.addEventListener("input", loadRoutineFromInput);
-routineInput.addEventListener("change", loadRoutineFromInput);
+// Routine Combobox Handlers
+comboboxToggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleComboboxDropdown();
+});
+
+routineInput.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleComboboxDropdown(true);
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+    if (!e.target.closest("#routine-combobox")) {
+        hideComboboxDropdown();
+    }
+});
 
 /* ==========================================================================
    STOPWATCH TIMER PAGE CONTROLLER
@@ -750,8 +1064,65 @@ document.getElementById("btn-export-csv").addEventListener("click", () => {
 });
 
 /* ==========================================================================
-   INITIALIZATION
+   INITIALIZATION & EVENT BINDINGS FOR DEVICE STORAGE
    ========================================================================== */
+// Link file button
+btnLinkFile.addEventListener("click", linkLocalFile);
+
+// Export JSON action
+document.getElementById("btn-export-json").addEventListener("click", () => {
+    const dataStr = JSON.stringify(appData, null, 4);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const link = document.createElement("a");
+    link.setAttribute("href", dataUri);
+    link.setAttribute("download", `workout_tracker_backup_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+// Import JSON action
+const inputImportJson = document.getElementById("input-import-json");
+document.getElementById("btn-import-json").addEventListener("click", () => {
+    inputImportJson.click();
+});
+
+inputImportJson.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        try {
+            const parsed = JSON.parse(event.target.result);
+            if (parsed && (parsed.templates || parsed.history)) {
+                if (confirm("Importing this backup will overwrite your current settings and history. Continue?")) {
+                    appData = {
+                        templates: parsed.templates || { ...DEFAULT_TEMPLATES },
+                        history: parsed.history || []
+                    };
+                    await saveStorageData();
+                    
+                    // Refresh UI components
+                    refreshRoutineOptions();
+                    loadRoutineFromInput();
+                    if (pages.history.classList.contains("active")) {
+                        renderHistory();
+                    }
+                    alert("Workout tracker data imported successfully!");
+                }
+            } else {
+                alert("Invalid format: The selected JSON file does not contain valid workout templates or history.");
+            }
+        } catch (err) {
+            alert("Error parsing JSON file: " + err.message);
+        }
+        inputImportJson.value = ""; // Reset input
+    };
+    reader.readAsText(file);
+});
+
+// Initialize
 loadStorageData();
 
 // Set initial routine row setup
@@ -759,3 +1130,7 @@ routineInput.value = "Pull-up Day";
 loadRoutineFromInput();
 refreshRoutineOptions();
 showPage("setup");
+
+// Query server status asynchronously on load
+checkServerConnection();
+

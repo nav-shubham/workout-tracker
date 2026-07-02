@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Tracker — Elite Web Edition</title>
+    <title>Workout Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Premium Neon Ambient Background Glows -->
-    <div class="bg-glow bg-glow-primary"></div>
-    <div class="bg-glow bg-glow-accent"></div>
-
     <header class="app-header">
         <div class="header-logo">
-            <span class="logo-accent">WORKOUT</span> TRACKER
+            <span class="logo-accent">WORKOUT</span>TRACKER
         </div>
         <nav class="app-nav">
             <button id="nav-btn-setup" class="nav-tab active" data-target="setup-page">
@@ -41,9 +37,12 @@
                     <div class="glass-card header-card">
                         <div class="card-title-row">
                             <h2>Configure Routine</h2>
-                            <div class="combobox-container">
-                                <input type="text" id="routine-input" placeholder="Select or Name Routine..." list="routine-list" autocomplete="off">
-                                <datalist id="routine-list"></datalist>
+                            <div class="custom-combobox" id="routine-combobox">
+                                <input type="text" id="routine-input" placeholder="Routine Name..." autocomplete="off">
+                                <button type="button" class="combobox-toggle" id="combobox-toggle-btn" aria-label="Toggle Presets">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="combobox-dropdown" id="combobox-dropdown"></div>
                             </div>
                         </div>
                     </div>
@@ -76,6 +75,38 @@
                             <button id="btn-start-workout" class="btn btn-primary btn-large font-emphasis">
                                 Start Workout →
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Local Device Storage Glass Card -->
+                    <div class="glass-card storage-card" style="margin-top: 20px;">
+                        <h3>💾 Device Storage</h3>
+                        <div id="storage-status-badge" class="storage-status-badge">
+                            Status: <span id="storage-status-text" class="status-offline">Offline (Browser cache)</span>
+                        </div>
+                        <div class="storage-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <!-- File Sync Option (File System Access API) -->
+                            <button id="btn-link-file" class="btn btn-secondary btn-small" title="Link a local JSON file to auto-sync directly in the browser">
+                                🔗 Link Local JSON File
+                            </button>
+                            <div id="linked-file-info" class="linked-file-info" style="display: none; font-size: 0.8rem; color: hsl(var(--text-muted)); font-family: var(--font-mono); word-break: break-all;">
+                                File: <span id="linked-file-name">-</span>
+                            </div>
+                            
+                            <!-- Export/Import Options -->
+                            <div style="display: flex; gap: 8px;">
+                                <button id="btn-export-json" class="btn btn-secondary btn-small" style="flex: 1;" title="Export all workout data as JSON file">
+                                    Export JSON
+                                </button>
+                                <button id="btn-import-json" class="btn btn-secondary btn-small" style="flex: 1;" title="Import workout data from a JSON file">
+                                    Import JSON
+                                </button>
+                            </div>
+                            <!-- Hidden input for file importing -->
+                            <input type="file" id="input-import-json" accept=".json" style="display: none;">
+                        </div>
+                        <div class="storage-help" style="margin-top: 12px; font-size: 0.75rem; color: hsl(var(--text-dim)); line-height: 1.4;">
+                            To save to disk automatically, run <code>python server.py</code> in this directory and open <a href="http://localhost:8000" id="local-server-link" target="_blank" style="color: hsl(var(--primary)); text-decoration: underline;">localhost:8000</a>.
                         </div>
                     </div>
                 </div>
@@ -162,7 +193,7 @@
     </main>
 
     <footer class="app-footer">
-        <p>Workout Tracker Elite Web — Synthesized Sound Chimes Activated</p>
+        <p>Workout Tracker &copy; 2026. Built for Performance.</p>
     </footer>
 
     <!-- App JavaScript Logic -->
