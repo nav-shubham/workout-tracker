@@ -1,0 +1,76 @@
+{
+  "planName": "Week 12 - Athletic Cut + Calisthenics Skill Phase",
+  "description": "Higher sets, lower reps for improved technique while maintaining weekly volume.",
+  "goals": [
+    "Faster fat loss",
+    "Pull-up strength progression",
+    "Skill development",
+    "Athletic conditioning",
+    "Joint safety"
+  ],
+  "principles": [
+    "1-2 RIR on every set",
+    "Explosive concentric, controlled eccentric",
+    "45-60 minute sessions",
+    "No kipping",
+    "Rest 45-60s (90s for pull-ups if needed)"
+  ],
+  "routines": {
+    "Day 1 - Pull Strength": [
+      { "name": "Dead Hang", "sets": 2, "targetReps": "30s", "restSeconds": 30 },
+      { "name": "Scapular Pull-ups", "sets": 2, "targetReps": "8", "restSeconds": 30 },
+      { "name": "Band Pull-aparts", "sets": 2, "targetReps": "15", "restSeconds": 30 },
+      { "name": "Pull-ups", "sets": 9, "targetReps": "2", "restSeconds": 90, "notes": "1-2 RIR" },
+      { "name": "Negative Pull-ups (6s down)", "sets": 9, "targetReps": "1", "restSeconds": 60 },
+      { "name": "Band Rows", "sets": 5, "targetReps": "9", "restSeconds": 60 },
+      { "name": "Top Hold", "sets": 3, "targetReps": "15s", "restSeconds": 45 },
+      { "name": "Active Hang", "sets": 3, "targetReps": "25s", "restSeconds": 45 }
+    ],
+
+    "Day 2 - Core & L-Sit": [
+      { "name": "L-Sit / Advanced Tuck", "sets": 5, "targetReps": "15-25s", "restSeconds": 60 },
+      { "name": "Parallettes Knee Raises", "sets": 6, "targetReps": "8", "restSeconds": 45 },
+      { "name": "Hanging Knee Raises", "sets": 6, "targetReps": "8", "restSeconds": 45 },
+      { "name": "Side Plank", "sets": 3, "targetReps": "45s/side", "restSeconds": 30 },
+      { "name": "Compression Pulses", "sets": 3, "targetReps": "12", "restSeconds": 30 },
+      { "name": "Ab Vacuum", "sets": 3, "targetReps": "45s", "restSeconds": 30 }
+    ],
+
+    "Day 3 - Push Strength": [
+      { "name": "Deep Parallettes Push-ups", "sets": 6, "targetReps": "8", "restSeconds": 60 },
+      { "name": "Pike Push-ups", "sets": 5, "targetReps": "8", "restSeconds": 60 },
+      { "name": "Band Overhead Press", "sets": 5, "targetReps": "9", "restSeconds": 60 },
+      { "name": "Wall Handstand Hold", "sets": 4, "targetReps": "30s", "restSeconds": 45 },
+      { "name": "Wall Shoulder Taps", "sets": 3, "targetReps": "6", "restSeconds": 45 }
+    ],
+
+    "Day 4 - Legs": [
+      { "name": "Bulgarian Split Squat", "sets": 6, "targetReps": "8/leg", "restSeconds": 60 },
+      { "name": "Band Squat", "sets": 8, "targetReps": "10", "restSeconds": 45 },
+      { "name": "Reverse Lunge", "sets": 6, "targetReps": "6/leg", "restSeconds": 60 },
+      { "name": "Band Romanian Deadlift", "sets": 5, "targetReps": "9", "restSeconds": 60 },
+      { "name": "Pistol Squat to Chair", "sets": 4, "targetReps": "5/leg", "restSeconds": 60 }
+    ],
+
+    "Day 5 - Pull Volume": [
+      { "name": "Pull-ups", "sets": 9, "targetReps": "2", "restSeconds": 60, "notes": "Stop before failure" },
+      { "name": "Inverted Rows", "sets": 6, "targetReps": "8", "restSeconds": 60 },
+      { "name": "Band Straight-arm Pulldown", "sets": 5, "targetReps": "9", "restSeconds": 45 },
+      { "name": "Scapular Pull-ups", "sets": 3, "targetReps": "10", "restSeconds": 45 },
+      { "name": "Hollow Hold", "sets": 4, "targetReps": "40s", "restSeconds": 45 }
+    ],
+
+    "Day 6 - Athletic Flow": [
+      { "name": "Circuit (Pull-up, Push-up, Squat, Hanging Knee Raise, Plank)", "sets": 4, "targetReps": "2 / 8 / 10 / 8 / 40s", "restSeconds": 60 },
+      { "name": "Skill Practice (Handstand / L-Sit / Pistol Squat)", "sets": 1, "targetReps": "10 min", "restSeconds": 0 },
+      { "name": "Nasal Breathing", "sets": 1, "targetReps": "5 min", "restSeconds": 0 }
+    ],
+
+    "Day 7 - Recovery": [
+      { "name": "Walk", "sets": 1, "targetReps": "25-30 min", "restSeconds": 0 },
+      { "name": "Full Body Stretch", "sets": 1, "targetReps": "15 min", "restSeconds": 0 },
+      { "name": "Passive Hang", "sets": 2, "targetReps": "60s", "restSeconds": 45 },
+      { "name": "Hip & Wrist Mobility", "sets": 1, "targetReps": "10 min", "restSeconds": 0 }
+    ]
+  }
+}

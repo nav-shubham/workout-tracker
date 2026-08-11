@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WorkoutPlan",
+  "description": "JSON Schema for AI-generated workout plans importable into Workout Tracker",
+  "type": "object",
+  "required": [
+    "planName",
+    "routines"
+  ],
+  "properties": {
+    "planName": {
+      "type": "string",
+      "description": "Name of the workout plan (e.g., 'Recovery-Optimized Calisthenics')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Overview of the workout program"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of fitness or performance goals"
+    },
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Key training principles (e.g., RIR, rest times, deload frequency)"
+    },
+    "routines": {
+      "type": "object",
+      "description": "Dictionary of routine names mapped to lists of exercises",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "sets"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of exercise, optionally including details or tempo cues"
+            },
+            "sets": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Total number of sets for this exercise"
+            },
+            "targetReps": {
+              "type": "string",
+              "description": "Target rep count or hold duration (e.g., '8-10', '20-30s')"
+            },
+            "restSeconds": {
+              "type": "integer",
+              "description": "Rest duration in seconds after each set"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Execution notes, intensity targets (e.g., 1 RIR), or warm-up cues"
+            }
+          }
+        }
+      }
+    }
+  }
+}
