@@ -168,7 +168,7 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
   }
 ];
 
-const ALL_PLANS = {
+const BUILTIN_PLANS = {
   recovery_v2: {
     name: "Recovery-Optimized Plan",
     data: RECOVERY_OPTIMIZED_PLAN
@@ -179,13 +179,20 @@ const ALL_PLANS = {
   }
 };
 
+const ALL_PLANS = { ...BUILTIN_PLANS };
+
+function isCustomPlan(planId) {
+  return !(planId in BUILTIN_PLANS);
+}
+
 let activePlanId = 'recovery_v2';
 function getCurrentPlan() {
-  return (ALL_PLANS[activePlanId] || ALL_PLANS.recovery_v2).data;
+  return (ALL_PLANS[activePlanId] || ALL_PLANS.recovery_v2 || Object.values(ALL_PLANS)[0]).data;
 }
 
 function updatePlanSelector() {
   const sel = document.getElementById('planSelector');
+  const delBtn = document.getElementById('deletePlanBtn');
   if(!sel) return;
   sel.innerHTML = '';
   Object.entries(ALL_PLANS).forEach(([key, plan]) => {
@@ -195,6 +202,19 @@ function updatePlanSelector() {
     if(key === activePlanId) opt.selected = true;
     sel.appendChild(opt);
   });
+
+  if (delBtn) {
+    const currentPlan = ALL_PLANS[activePlanId];
+    const canDelete = isCustomPlan(activePlanId);
+    delBtn.disabled = !canDelete;
+    if (canDelete) {
+      delBtn.title = `Delete active plan: "${currentPlan ? currentPlan.name : 'Custom Plan'}"`;
+      delBtn.setAttribute('aria-label', `Delete active plan: "${currentPlan ? currentPlan.name : 'Custom Plan'}"`);
+    } else {
+      delBtn.title = "Built-in preset plans cannot be deleted";
+      delBtn.setAttribute('aria-label', "Built-in preset plans cannot be deleted");
+    }
+  }
 }
 
 const WEEKDAY_ORDER = ['mon','tue','wed','thu','fri','sat','sun'];
@@ -769,6 +789,7 @@ function renderHistory(){
       <div class="util-btn" id="exportBtn">Export JSON</div>
       <div class="util-btn" id="importBtn">Import File</div>
       <div class="util-btn" id="pasteAiPlanBtn" style="border-color: var(--accent); color: var(--accent);">🤖 Import AI Plan</div>
+      <div class="util-btn" id="managePlansBtn" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;">🗑️ Manage / Delete Plans</div>
     </div>`;
 
   el.innerHTML = html;
@@ -819,11 +840,13 @@ function wireUtilButtons(){
   const importBtn = document.getElementById('importBtn');
   const exportExcelBtn = document.getElementById('exportExcelBtn');
   const pasteAiPlanBtn = document.getElementById('pasteAiPlanBtn');
+  const managePlansBtn = document.getElementById('managePlansBtn');
 
   if(exportBtn) exportBtn.addEventListener('click', exportData);
   if(importBtn) importBtn.addEventListener('click', ()=> document.getElementById('importFile').click());
   if(exportExcelBtn) exportExcelBtn.addEventListener('click', exportExcel);
   if(pasteAiPlanBtn) pasteAiPlanBtn.addEventListener('click', openAiModal);
+  if(managePlansBtn) managePlansBtn.addEventListener('click', openManagePlansModal);
 }
 
 function openAiModal() {
@@ -831,6 +854,150 @@ function openAiModal() {
 }
 function closeAiModal() {
   document.getElementById('aiPlanModal').style.display = 'none';
+}
+
+function openManagePlansModal() {
+  renderManagePlansList();
+  const modal = document.getElementById('managePlansModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeManagePlansModal() {
+  const modal = document.getElementById('managePlansModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function deletePlan(planId) {
+  const plan = ALL_PLANS[planId];
+  if (!plan) {
+    showToast("Plan not found");
+    return false;
+  }
+  if (!isCustomPlan(planId)) {
+    alert("Default built-in preset plans cannot be deleted.");
+    return false;
+  }
+
+  const confirmDelete = confirm(
+    `Are you sure you want to delete the plan "${plan.name}"?\n\nThis will remove this routine from your plan list. (Your logged workout history will remain preserved).`
+  );
+  if (!confirmDelete) return false;
+
+  const deletedName = plan.name;
+  delete ALL_PLANS[planId];
+
+  // If deleted plan was active, switch to fallback
+  if (activePlanId === planId) {
+    const remainingKeys = Object.keys(ALL_PLANS);
+    if (remainingKeys.includes('recovery_v2')) {
+      activePlanId = 'recovery_v2';
+    } else if (remainingKeys.length > 0) {
+      activePlanId = remainingKeys[0];
+    }
+    selectedDayId = todayWeekdayId();
+    draft = {};
+    clearRestTimer();
+  }
+
+  saveToServer();
+  renderAll();
+  renderManagePlansList();
+  showToast(`Plan "${deletedName}" deleted`);
+  return true;
+}
+
+function renderManagePlansList() {
+  const listEl = document.getElementById('managePlansList');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  const entries = Object.entries(ALL_PLANS);
+  if (entries.length === 0) {
+    listEl.innerHTML = '<div style="color:var(--text-dim); text-align:center; padding:24px 10px; font-size:13px;">No workout plans installed.</div>';
+    return;
+  }
+
+  entries.forEach(([planId, plan]) => {
+    const isCustom = isCustomPlan(planId);
+    const isActive = planId === activePlanId;
+    const daysCount = Array.isArray(plan.data) ? plan.data.length : 0;
+
+    const card = document.createElement('div');
+    card.className = `plan-manage-card ${isActive ? 'active' : ''}`;
+
+    let badgeHtml = '';
+    if (isActive) {
+      badgeHtml += `<span class="plan-manage-badge current">ACTIVE</span>`;
+    }
+    if (isCustom) {
+      badgeHtml += `<span class="plan-manage-badge custom">CUSTOM AI PLAN</span>`;
+    } else {
+      badgeHtml += `<span class="plan-manage-badge built-in">PRESET</span>`;
+    }
+    badgeHtml += `<span style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono);">${daysCount} ${daysCount === 1 ? 'day' : 'days'}</span>`;
+
+    let actionsHtml = '';
+    if (!isActive) {
+      actionsHtml += `<button class="plan-manage-btn" data-action="switch" data-id="${planId}">Select</button>`;
+    }
+    if (isCustom) {
+      actionsHtml += `<button class="plan-manage-btn delete" data-action="delete" data-id="${planId}" title="Delete this plan">Delete</button>`;
+    }
+
+    card.innerHTML = `
+      <div class="plan-manage-info">
+        <div class="plan-manage-name" title="${plan.name}">${plan.name}</div>
+        <div class="plan-manage-badge-row">${badgeHtml}</div>
+      </div>
+      <div class="plan-manage-actions">${actionsHtml}</div>
+    `;
+
+    listEl.appendChild(card);
+  });
+
+  listEl.querySelectorAll('button[data-action="switch"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pId = btn.dataset.id;
+      if (ALL_PLANS[pId]) {
+        activePlanId = pId;
+        selectedDayId = todayWeekdayId();
+        draft = {};
+        clearRestTimer();
+        renderAll();
+        renderManagePlansList();
+        saveToServer();
+        showToast(`Switched to "${ALL_PLANS[pId].name}"`);
+      }
+    });
+  });
+
+  listEl.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pId = btn.dataset.id;
+      deletePlan(pId);
+    });
+  });
+}
+
+const closeManagePlansBtn = document.getElementById('closeManagePlansBtn');
+if (closeManagePlansBtn) closeManagePlansBtn.addEventListener('click', closeManagePlansModal);
+
+const closeManagePlansBottomBtn = document.getElementById('closeManagePlansBottomBtn');
+if (closeManagePlansBottomBtn) closeManagePlansBottomBtn.addEventListener('click', closeManagePlansModal);
+
+const importAiFromManageBtn = document.getElementById('importAiFromManageBtn');
+if (importAiFromManageBtn) {
+  importAiFromManageBtn.addEventListener('click', () => {
+    closeManagePlansModal();
+    openAiModal();
+  });
+}
+
+const deletePlanBtn = document.getElementById('deletePlanBtn');
+if (deletePlanBtn) {
+  deletePlanBtn.addEventListener('click', () => {
+    deletePlan(activePlanId);
+  });
 }
 
 document.getElementById('closeAiModalBtn').addEventListener('click', closeAiModal);
@@ -849,7 +1016,14 @@ function importAiPlanJson(jsonString) {
 
     if (Array.isArray(parsed.logs)) {
       saveLogs(parsed.logs);
-      showToast('Imported workout logs');
+      if (parsed.customPlans && typeof parsed.customPlans === 'object') {
+        Object.assign(ALL_PLANS, parsed.customPlans);
+      }
+      if (parsed.activePlanId && ALL_PLANS[parsed.activePlanId]) {
+        activePlanId = parsed.activePlanId;
+      }
+      saveToServer();
+      showToast('Imported workout logs & plans');
       renderAll();
       return true;
     }
@@ -927,7 +1101,11 @@ function importAiPlanJson(jsonString) {
 
 function exportData(){
   try {
-    const data = { logs: loadLogs(), activePlanId, customPlans: ALL_PLANS, exportedAt: new Date().toISOString() };
+    const customPlans = {};
+    Object.keys(ALL_PLANS).forEach(k => {
+      if(isCustomPlan(k)) customPlans[k] = ALL_PLANS[k];
+    });
+    const data = { logs: loadLogs(), activePlanId, customPlans, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1039,11 +1217,17 @@ async function syncWithServer() {
         const merged = Array.from(mergedMap.values());
         localStorage.setItem(LS_LOGS, JSON.stringify(merged));
       }
-      if(serverData.customPlans) {
+      for (const k in ALL_PLANS) {
+        delete ALL_PLANS[k];
+      }
+      Object.assign(ALL_PLANS, BUILTIN_PLANS);
+      if(serverData.customPlans && typeof serverData.customPlans === 'object') {
         Object.assign(ALL_PLANS, serverData.customPlans);
       }
       if(serverData.activePlanId && ALL_PLANS[serverData.activePlanId]) {
         activePlanId = serverData.activePlanId;
+      } else if (!ALL_PLANS[activePlanId]) {
+        activePlanId = 'recovery_v2';
       }
       updatePlanSelector();
       renderAll();
@@ -1058,7 +1242,7 @@ async function saveToServer() {
     const logs = loadLogs();
     const customPlans = {};
     Object.keys(ALL_PLANS).forEach(k => {
-      if(k.startsWith('custom_')) customPlans[k] = ALL_PLANS[k];
+      if(isCustomPlan(k)) customPlans[k] = ALL_PLANS[k];
     });
     await fetch('/api/data', {
       method: 'POST',
