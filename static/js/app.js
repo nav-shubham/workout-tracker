@@ -785,8 +785,9 @@ function renderHistory(){
   }
 
   html += `<div class="util-row">
-      <div class="util-btn" id="exportExcelBtn">Export Excel</div>
-      <div class="util-btn" id="exportBtn">Export JSON</div>
+      <div class="util-btn" id="exportExcelBtn">Export Excel (Logs)</div>
+      <div class="util-btn" id="exportBtn">Export Logs (JSON)</div>
+      <div class="util-btn" id="exportPlanBtn" style="border-color: var(--secondary); color: var(--secondary);">📤 Export Workout Plan</div>
       <div class="util-btn" id="importBtn">Import File</div>
       <div class="util-btn" id="pasteAiPlanBtn" style="border-color: var(--accent); color: var(--accent);">🤖 Import AI Plan</div>
       <div class="util-btn" id="managePlansBtn" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;">🗑️ Manage / Delete Plans</div>
@@ -841,12 +842,14 @@ function wireUtilButtons(){
   const exportExcelBtn = document.getElementById('exportExcelBtn');
   const pasteAiPlanBtn = document.getElementById('pasteAiPlanBtn');
   const managePlansBtn = document.getElementById('managePlansBtn');
+  const exportPlanBtn = document.getElementById('exportPlanBtn');
 
   if(exportBtn) exportBtn.addEventListener('click', exportData);
   if(importBtn) importBtn.addEventListener('click', ()=> document.getElementById('importFile').click());
   if(exportExcelBtn) exportExcelBtn.addEventListener('click', exportExcel);
   if(pasteAiPlanBtn) pasteAiPlanBtn.addEventListener('click', openAiModal);
   if(managePlansBtn) managePlansBtn.addEventListener('click', openManagePlansModal);
+  if(exportPlanBtn) exportPlanBtn.addEventListener('click', () => exportPlan(activePlanId));
 }
 
 function openAiModal() {
@@ -865,6 +868,111 @@ function openManagePlansModal() {
 function closeManagePlansModal() {
   const modal = document.getElementById('managePlansModal');
   if (modal) modal.style.display = 'none';
+}
+
+function exportPlan(planId) {
+  const targetId = planId || activePlanId;
+  const plan = ALL_PLANS[targetId];
+  if (!plan) {
+    showToast("Plan not found");
+    return;
+  }
+
+  const routines = {};
+  const goals = [];
+  const principles = [];
+
+  if (Array.isArray(plan.data)) {
+    plan.data.forEach(day => {
+      const exList = [];
+      if (day.goal && !goals.includes(day.goal)) goals.push(day.goal);
+      if (day.cue && !principles.includes(day.cue)) principles.push(day.cue);
+
+      if (day.warmup && Array.isArray(day.warmup)) {
+        day.warmup.forEach(w => {
+          exList.push({
+            name: `Warm-up: ${w}`,
+            sets: 1,
+            targetReps: '1 round',
+            restSeconds: 30,
+            notes: 'Warm-up preparation'
+          });
+        });
+      }
+
+      if (day.main && Array.isArray(day.main)) {
+        day.main.forEach(ex => {
+          exList.push({
+            name: ex.name,
+            sets: ex.sets,
+            targetReps: ex.target,
+            restSeconds: ex.rest || 60,
+            notes: ex.note || ''
+          });
+        });
+      }
+
+      if (day.skill && Array.isArray(day.skill)) {
+        day.skill.forEach(ex => {
+          exList.push({
+            name: `Skill: ${ex.name}`,
+            sets: ex.sets,
+            targetReps: ex.target,
+            restSeconds: ex.rest || 60,
+            notes: ex.note || 'Skill work'
+          });
+        });
+      }
+
+      if (day.finisher && Array.isArray(day.finisher)) {
+        day.finisher.forEach(f => {
+          exList.push({
+            name: `Finisher: ${f}`,
+            sets: 1,
+            targetReps: '1 round',
+            restSeconds: 45,
+            notes: 'Metabolic finisher'
+          });
+        });
+      }
+
+      if (day.recovery && day.routine && Array.isArray(day.routine)) {
+        day.routine.forEach(r => {
+          exList.push({
+            name: `Recovery: ${r}`,
+            sets: 1,
+            targetReps: '1 round',
+            restSeconds: 0,
+            notes: 'Active recovery'
+          });
+        });
+      }
+
+      routines[day.name || `Day ${day.num || 1}`] = exList;
+    });
+  }
+
+  const exportPayload = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    planName: plan.name,
+    description: goals[0] || `Workout routine: ${plan.name}`,
+    goals: goals.length ? goals.slice(0, 5) : ['Strength progression', 'Hypertrophy', 'Recovery optimization'],
+    principles: principles.length ? principles : ['1-2 RIR on compound sets', 'Progressive overload', 'Controlled tempo'],
+    routines: routines,
+    days: plan.data
+  };
+
+  const safeFilename = plan.name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workout-plan-${safeFilename}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`Exported "${plan.name}" plan`);
 }
 
 function deletePlan(planId) {
@@ -940,6 +1048,7 @@ function renderManagePlansList() {
     if (!isActive) {
       actionsHtml += `<button class="plan-manage-btn" data-action="switch" data-id="${planId}">Select</button>`;
     }
+    actionsHtml += `<button class="plan-manage-btn export" data-action="export" data-id="${planId}" title="Export this plan as JSON">Export</button>`;
     if (isCustom) {
       actionsHtml += `<button class="plan-manage-btn delete" data-action="delete" data-id="${planId}" title="Delete this plan">Delete</button>`;
     }
@@ -968,6 +1077,13 @@ function renderManagePlansList() {
         saveToServer();
         showToast(`Switched to "${ALL_PLANS[pId].name}"`);
       }
+    });
+  });
+
+  listEl.querySelectorAll('button[data-action="export"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pId = btn.dataset.id;
+      exportPlan(pId);
     });
   });
 
@@ -1029,6 +1145,35 @@ function importAiPlanJson(jsonString) {
     }
 
     let planName = parsed.planName || parsed.name || "AI Workout Plan";
+
+    if (Array.isArray(parsed.days) && parsed.days.length > 0) {
+      const planId = 'custom_' + Date.now();
+      ALL_PLANS[planId] = {
+        name: planName,
+        data: parsed.days
+      };
+      activePlanId = planId;
+      saveToServer();
+      updatePlanSelector();
+      renderAll();
+      showToast(`Imported "${planName}"!`);
+      return true;
+    }
+
+    if (Array.isArray(parsed.data) && parsed.data.length > 0) {
+      const planId = 'custom_' + Date.now();
+      ALL_PLANS[planId] = {
+        name: planName,
+        data: parsed.data
+      };
+      activePlanId = planId;
+      saveToServer();
+      updatePlanSelector();
+      renderAll();
+      showToast(`Imported "${planName}"!`);
+      return true;
+    }
+
     let routines = parsed.routines || parsed.templates || parsed.plan;
 
     if (!routines || typeof routines !== 'object') {

@@ -1148,9 +1148,16 @@
     transition: all 0.15s ease;
   }
 
-  .plan-manage-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .plan-manage-btn.export {
+    background: var(--secondary-dim);
+    border-color: rgba(56, 189, 248, 0.25);
+    color: var(--secondary);
+  }
+
+  .plan-manage-btn.export:hover {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: var(--secondary);
+    color: #ffffff;
   }
 
   .plan-manage-btn.delete {
