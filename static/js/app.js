@@ -161,8 +161,8 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
     finisher:['3 rounds — Burpees x8','3 rounds — Plank Shoulder Taps x20','Rest 45s between rounds'],
     cue:'Push deep on parallettes. Engage core fully.'
   },
-  { id:'fri', num:5, name:'Pull Volume + Metabolic Conditioning',
-    goal:'Build lats width, pulling volume, and high-density full body conditioning.',
+  { id:'fri', num:5, name:'Pull Volume (Back & Lats Focus)',
+    goal:'Build lats width, pulling volume, and submaximal back strength.',
     warmup:['Dead hang — 40s','Band pull-aparts — x15'],
     main:[
       {id:'fri_pullups', name:'Pull-ups', sets:5, target:'AMRAP', note:'Stop 1–2 reps before failure', unit:'reps', rest:120},
@@ -171,22 +171,22 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
     ],
     core:[],
     skill:[],
-    finisher:['3-4 rounds — Push-ups x10','3-4 rounds — Squats x20','3-4 rounds — Hanging Knee Raises x10','Rest 60–75s between rounds'],
-    cue:'High pull volume builds shape. Power through the metabolic circuit.'
+    finisher:[],
+    cue:'High pull volume builds shape. Focus on clean technique and full ROM.'
   },
-  { id:'sat', num:6, name:'Light Legs & Active Recovery', recovery:true,
-    goal:'Active recovery session focusing on hip mobility and light activation.',
-    warmup:[],
+  { id:'sat', num:6, name:'Light Legs & Conditioning Circuit', recovery:true,
+    goal:'Active recovery session focusing on hip mobility, light activation, and metabolic conditioning.',
+    warmup:['Hip mobility + Pigeon stretch','Light band glute work','Passive hang — 2 × 60s'],
     main:[],
     core:[],
     skill:[],
-    finisher:[],
-    routine:['30–40 min brisk walk','Hip mobility + Pigeon stretch','Light band glute work','Passive hang — 2 × 60s'],
+    finisher:['3-4 rounds — Push-ups x10','3-4 rounds — Squats x20','3-4 rounds — Hanging Knee Raises x10','Rest 60–75s between rounds'],
+    routine:['30–40 min brisk walk'],
     reflection:[
       {id:'walk_time', label:'Brisk walk duration (mins)?'},
       {id:'hips_feel', label:'How do your hips feel (1-10)?'}
     ],
-    cue:'Consistency in recovery builds performance.'
+    cue:'Consistency in active recovery and conditioning builds stamina.'
   },
   { id:'sun', num:7, name:'Full Rest + Reflection', recovery:true,
     goal:'Reflect on your weekly progress, measure waist, and fully recharge.',
@@ -212,7 +212,7 @@ const BUILTIN_PLANS = {
     data: RECOVERY_OPTIMIZED_PLAN
   },
   athletic_cut_w12: {
-    name: "Athletic Cut — Week 12",
+    name: "Modified Week 12 — Athletic Cut & Performance",
     data: ATHLETIC_CUT_WEEK12_PLAN
   }
 };
@@ -565,14 +565,26 @@ function renderTrain(){
   </div>`;
 
   if(day.recovery){
-    html += `<div class="section-label">🌿 Recovery Routine</div>`;
-    (day.routine||[]).forEach((r,i)=> html += makeCheckItem(r, 'routine_'+i));
-    html += `<div class="section-label">📊 Weekly Reflection</div><div class="reflect">`;
-    draft.reflect = draft.reflect || {};
-    (day.reflection||[]).forEach(r=>{
-      html += `<label>${r.label}</label><input type="text" data-reflect="${r.id}" value="${draft.reflect[r.id]||''}">`;
-    });
-    html += `</div>`;
+    if(day.warmup && day.warmup.length){
+      html += `<div class="section-label">⚡ Mobility &amp; Warm-Up</div>`;
+      day.warmup.forEach((w,i)=> html += makeCheckItem(w, 'warmup_'+i));
+    }
+    if(day.routine && day.routine.length){
+      html += `<div class="section-label">🌿 Recovery Routine</div>`;
+      day.routine.forEach((r,i)=> html += makeCheckItem(r, 'routine_'+i));
+    }
+    if(day.finisher && day.finisher.length){
+      html += `<div class="section-label">🔥 Conditioning &amp; Finisher Circuit</div>`;
+      day.finisher.forEach((f,i)=> html += makeCheckItem(f, 'finisher_'+i));
+    }
+    if(day.reflection && day.reflection.length){
+      html += `<div class="section-label">📊 Weekly Reflection</div><div class="reflect">`;
+      draft.reflect = draft.reflect || {};
+      day.reflection.forEach(r=>{
+        html += `<label>${r.label}</label><input type="text" data-reflect="${r.id}" value="${draft.reflect[r.id]||''}">`;
+      });
+      html += `</div>`;
+    }
   } else {
     if(day.warmup && day.warmup.length){
       html += `<div class="section-label">⚡ Warm-Up</div>`;

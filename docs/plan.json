@@ -97,7 +97,7 @@
       ],
       "cue": "Push deep on parallettes. Engage core fully."
     },
-    "Day 5 — Pull Volume + Metabolic Conditioning": {
+    "Day 5 — Pull Volume (Back & Lats Focus)": {
       "warmup": [
         "Dead hang — 40s",
         "Band pull-aparts — x15"
@@ -108,31 +108,32 @@
         { "name": "Band Straight-Arm Pulldowns", "sets": 3, "targetReps": "15 reps", "restSeconds": 60, "notes": "Isolate lats" }
       ],
       "core": [],
+      "finisher": [],
+      "cue": "High pull volume builds shape. Focus on clean technique and full ROM."
+    },
+    "Day 6 — Light Legs & Conditioning Circuit": {
+      "warmup": [
+        "Hip mobility + Pigeon stretch",
+        "Light band glute work",
+        "Passive hang — 2 × 60s"
+      ],
+      "main": [],
+      "core": [],
       "finisher": [
         "3-4 rounds — Push-ups x10",
         "3-4 rounds — Squats x20",
         "3-4 rounds — Hanging Knee Raises x10",
         "Rest 60-75s between rounds"
       ],
-      "cue": "High pull volume builds shape. Power through the metabolic circuit."
-    },
-    "Day 6 — Light Legs & Active Recovery": {
-      "warmup": [],
-      "main": [],
-      "core": [],
-      "finisher": [],
       "recovery": true,
       "routine": [
-        "30–40 min brisk walk",
-        "Hip mobility + Pigeon stretch",
-        "Light band glute work",
-        "Passive hang — 2 × 60s"
+        "30–40 min brisk walk"
       ],
       "reflection": [
         { "id": "walk_time", "label": "Brisk walk duration (mins)?" },
         { "id": "hips_feel", "label": "How do your hips feel (1-10)?" }
       ],
-      "cue": "Consistency in recovery builds performance."
+      "cue": "Consistency in active recovery and conditioning builds stamina."
     },
     "Day 7 — Full Rest + Reflection": {
       "warmup": [],
