@@ -8,9 +8,10 @@ const RECOVERY_OPTIMIZED_PLAN = [
       {id:'mon_negatives', name:'Negative Pull-ups', sets:2, target:'3 reps', note:'6–8 sec lowering', unit:'reps', rest:90},
       {id:'mon_bandrows', name:'Band Rows', sets:3, target:'10–12 reps', unit:'reps', rest:60},
     ],
-    skill:[
-      {id:'mon_kneeraises', name:'Hanging Knee Raises', sets:3, target:'8–10 reps', unit:'reps', rest:60},
+    core:[
+      {id:'mon_kneeraises', name:'Hanging Knee Raises', sets:3, target:'8–10 reps', note:'Posterior pelvic tilt', unit:'reps', rest:60},
     ],
+    skill:[],
     finisher:[],
     cue:'Never train to failure. Leave 1 rep in reserve on pull-ups.'
   },
@@ -22,12 +23,18 @@ const RECOVERY_OPTIMIZED_PLAN = [
       {id:'tue_hipthrusts', name:'Band Hip Thrusts', sets:3, target:'12–15 reps', unit:'reps', rest:60},
       {id:'tue_bandsquats', name:'Band Squats', sets:2, target:'15 reps', unit:'reps', rest:60},
     ],
+    core:[],
     skill:[],
     finisher:[],
     cue:'Controlled tempo. Feel fresh when finishing.'
   },
   { id:'wed', num:3, name:'Active Recovery & Mobility', recovery:true,
     goal:'Active circulation, leg mobility, and mental reset for study performance.',
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
     routine:['Walk 30–45 minutes', 'Hamstring stretch', 'Hip flexor stretch', 'Passive hang 20–30 seconds'],
     reflection:[
       {id:'walk_mins', label:'Walk duration (minutes)?'},
@@ -43,12 +50,18 @@ const RECOVERY_OPTIMIZED_PLAN = [
       {id:'thu_pike_pushups', name:'Pike Push-ups', sets:3, target:'6–8 reps', unit:'reps', rest:60},
       {id:'thu_band_press', name:'Band Overhead Press', sets:2, target:'12 reps', unit:'reps', rest:60},
     ],
+    core:[],
     skill:[],
     finisher:[],
     cue:'Focus on deep stretch and scapular control.'
   },
   { id:'fri', num:5, name:'Complete Rest — Brain & Body Recovery', recovery:true,
     goal:'Complete rest day for full neural recovery during intense study phase.',
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
     routine:['Complete rest from workout', 'Light walking / passive stretch (optional)'],
     reflection:[
       {id:'study_focus', label:'Study performance & energy (1-10)?'}
@@ -63,12 +76,18 @@ const RECOVERY_OPTIMIZED_PLAN = [
       {id:'sat_rows', name:'Inverted Rows', sets:3, target:'10 reps', unit:'reps', rest:60},
       {id:'sat_pulldowns', name:'Band Straight-arm Pulldowns', sets:2, target:'15 reps', unit:'reps', rest:60},
     ],
+    core:[],
     skill:[],
     finisher:['1 round only (if fresh): Push-ups ×10 & Squats ×15'],
     cue:'Stay fresh. 1 round of finisher only if feeling great.'
   },
   { id:'sun', num:7, name:'Complete Rest & Weekly Reflection', recovery:true,
     goal:'Evaluate progress, rest completely, and prepare for next week.',
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
     routine:['Complete rest', 'Light walk or stretching'],
     reflection:[
       {id:'pullup_max', label:'Pull-up Max Reps (Retest)?'},
@@ -88,31 +107,38 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
       {id:'mon_negatives', name:'Negative Pull-ups', sets:3, target:'3 reps', note:'6–8s controlled descent', unit:'reps', rest:90},
       {id:'mon_bandrows', name:'Band Rows', sets:3, target:'12–15 reps', unit:'reps', rest:90},
     ],
-    skill:[
-      {id:'mon_kneeraises', name:'Hanging Knee Raises', sets:4, target:'10–12 reps', unit:'reps', rest:60},
-      {id:'mon_hollowhold', name:'Hollow Body Hold', sets:4, target:'30–45s', unit:'sec', rest:60},
+    core:[
+      {id:'mon_kneeraises', name:'Hanging Knee Raises', sets:4, target:'10–12 reps', note:'Posterior pelvic tilt', unit:'reps', rest:60},
+      {id:'mon_hollowhold', name:'Hollow Body Hold', sets:4, target:'30–45s', note:'Lower back pressed flat', unit:'sec', rest:60},
     ],
+    skill:[],
     finisher:['3 rounds — Mountain Climbers x30s','3 rounds — High Knees x30s','Rest 30s between rounds'],
     cue:'Explode up. Hold the hollow body tight.'
   },
-  { id:'tue', num:2, name:'Legs & Glutes (Hip Power)',
+  { id:'tue', num:2, name:'Legs & Glutes (Hip Power Focus)',
     goal:'Develop legs, glutes, and hip drive to support stamina and explosive power.',
     warmup:['Leg swings + Hip circles','Bodyweight Squats — x15'],
     main:[
       {id:'tue_bulgarian', name:'Bulgarian Split Squats', sets:4, target:'10–12/leg', note:'Rear foot on chair or low parallettes', unit:'reps', rest:75},
-      {id:'tue_hipthrusts', name:'Band Hip Thrusts', sets:4, target:'15–20 reps', note:'Band around knees', unit:'reps', rest:60},
-      {id:'tue_bandrdl', name:'Single-leg Romanian Deadlifts', sets:3, target:'10–12/leg', note:'With band', unit:'reps', rest:60},
-      {id:'tue_bandsquats', name:'Band Squats', sets:3, target:'20 reps', note:'Slow tempo', unit:'reps', rest:60},
+      {id:'tue_hipthrusts', name:'Band Hip Thrusts', sets:4, target:'15–20 reps', note:'Band around knees; 2s peak hold', unit:'reps', rest:60},
+      {id:'tue_bandrdl', name:'Single-leg Romanian Deadlifts', sets:3, target:'10–12/leg', note:'With band tension', unit:'reps', rest:60},
+      {id:'tue_bandsquats', name:'Band Squats', sets:3, target:'20 reps', note:'Slow controlled tempo', unit:'reps', rest:60},
     ],
-    skill:[
-      {id:'tue_lsit', name:'L-sit / Tuck Hold on parallettes', sets:5, target:'15–25s', unit:'sec', rest:60},
+    core:[
+      {id:'tue_lsit', name:'L-sit / Tuck Hold on Parallettes', sets:5, target:'15–25s', note:'Depress shoulders, compress hips', unit:'sec', rest:60},
     ],
+    skill:[],
     finisher:['4 rounds — Jump Squats x12','4 rounds — Glute Bridges (bodyweight) x15','Rest 30s between rounds'],
     cue:'Drive through the heels. Squeeze the glutes at the top.'
   },
   { id:'wed', num:3, name:'Rest or Active Recovery', recovery:true,
     goal:'Give your muscles rest to grow and keep active with steps.',
-    routine:['8k+ steps walk','Light stretching / mobility'],
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
+    routine:['8k+ steps brisk walk','Light stretching / mobility'],
     reflection:[
       {id:'steps', label:'Total steps today?'},
       {id:'soreness', label:'Soreness level (1-10)?'}
@@ -123,31 +149,38 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
     goal:'Build pushing power, shoulder stability, and core endurance.',
     warmup:['Wrist prep + Scapular push-ups — x12','Band dislocates — x12'],
     main:[
-      {id:'thu_deep_pushups', name:'Deep Parallettes Push-ups', sets:4, target:'10–12 reps', unit:'reps', rest:60},
-      {id:'thu_pike_pushups', name:'Pike Push-ups', sets:4, target:'8–10 reps', unit:'reps', rest:60},
-      {id:'thu_band_press', name:'Band Overhead Press', sets:3, target:'12–15 reps', unit:'reps', rest:60},
+      {id:'thu_deep_pushups', name:'Deep Parallettes Push-ups', sets:4, target:'10–12 reps', note:'Full depth below parallettes', unit:'reps', rest:60},
+      {id:'thu_pike_pushups', name:'Pike Push-ups', sets:4, target:'8–10 reps', note:'Vertical torso angle', unit:'reps', rest:60},
+      {id:'thu_band_press', name:'Band Overhead Press', sets:3, target:'12–15 reps', note:'Strict press without back arch', unit:'reps', rest:60},
     ],
-    skill:[
-      {id:'thu_side_plank', name:'Side Plank', sets:3, target:'45s/side', unit:'sec', rest:45},
-      {id:'thu_ab_vacuum', name:'Ab Vacuum', sets:3, target:'40s', unit:'sec', rest:45},
+    core:[
+      {id:'thu_side_plank', name:'Side Plank', sets:3, target:'45s/side', note:'Hips high and aligned', unit:'sec', rest:45},
+      {id:'thu_ab_vacuum', name:'Ab Vacuum', sets:3, target:'40s', note:'Full exhale, draw navel inward', unit:'sec', rest:45},
     ],
+    skill:[],
     finisher:['3 rounds — Burpees x8','3 rounds — Plank Shoulder Taps x20','Rest 45s between rounds'],
     cue:'Push deep on parallettes. Engage core fully.'
   },
   { id:'fri', num:5, name:'Pull Volume + Metabolic Conditioning',
     goal:'Build lats width, pulling volume, and high-density full body conditioning.',
-    warmup:['Dead hang — 40s','Band pull-aparts'],
+    warmup:['Dead hang — 40s','Band pull-aparts — x15'],
     main:[
       {id:'fri_pullups', name:'Pull-ups', sets:5, target:'AMRAP', note:'Stop 1–2 reps before failure', unit:'reps', rest:120},
       {id:'fri_rows', name:'Inverted Rows (under bar)', sets:4, target:'10–12 reps', unit:'reps', rest:75},
       {id:'fri_pulldowns', name:'Band Straight-Arm Pulldowns', sets:3, target:'15 reps', unit:'reps', rest:60},
     ],
+    core:[],
     skill:[],
     finisher:['3-4 rounds — Push-ups x10','3-4 rounds — Squats x20','3-4 rounds — Hanging Knee Raises x10','Rest 60–75s between rounds'],
     cue:'High pull volume builds shape. Power through the metabolic circuit.'
   },
   { id:'sat', num:6, name:'Light Legs & Active Recovery', recovery:true,
     goal:'Active recovery session focusing on hip mobility and light activation.',
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
     routine:['30–40 min brisk walk','Hip mobility + Pigeon stretch','Light band glute work','Passive hang — 2 × 60s'],
     reflection:[
       {id:'walk_time', label:'Brisk walk duration (mins)?'},
@@ -157,11 +190,16 @@ const ATHLETIC_CUT_WEEK12_PLAN = [
   },
   { id:'sun', num:7, name:'Full Rest + Reflection', recovery:true,
     goal:'Reflect on your weekly progress, measure waist, and fully recharge.',
+    warmup:[],
+    main:[],
+    core:[],
+    skill:[],
+    finisher:[],
     routine:['Light walk, stretch, or mobility'],
     reflection:[
       {id:'pullup_max', label:'Pull-up max reps?'},
       {id:'waist', label:'Waist measurement (in/cm)?'},
-      {id:'energy_bed', label:'Energy levels / Stamina (1-10)?'},
+      {id:'energy_bed', label:'Energy levels / Stamina in bed (1-10)?'},
       {id:'morning_wood', label:'Recovery quality (1-10)?'}
     ],
     cue:'Progress is measured across all indicators of health.'
@@ -406,9 +444,10 @@ function parseTargetNumber(target){
 
 function renderGuidedSection(day){
   const phases = [
-    { label:'Main Workout', exercises: day.main || [] },
-    { label:'Skill Work', exercises: day.skill || [] },
-  ].filter(p => p.exercises.length);
+    { label:'Main Workout', phaseTag:'MAIN', phaseKey:'main', exercises: day.main || [] },
+    { label:'Core & Stability', phaseTag:'CORE', phaseKey:'core', exercises: day.core || [] },
+    { label:'Skill Work', phaseTag:'SKILL', phaseKey:'skill', exercises: day.skill || [] },
+  ].filter(p => p.exercises && p.exercises.length);
 
   if(!phases.length) return '';
 
@@ -431,10 +470,10 @@ function renderGuidedSection(day){
   const current = findCurrentStep(phases);
 
   if(!current){
-    return `<div class="section-label">Main + Skill Work</div>
+    return `<div class="section-label">Main &amp; Core Work</div>
       <div class="complete-card">
         <div class="tick">✓</div>
-        <div class="msg"><b>All sets logged!</b><br>Main workout and skill work complete for today.</div>
+        <div class="msg"><b>All sets logged!</b><br>Main workout, core stability, and skill work complete for today.</div>
       </div>`;
   }
 
@@ -445,7 +484,7 @@ function renderGuidedSection(day){
   const s = draft[ex.id][rowIdx];
   const placeholder = parseTargetNumber(ex.target) || '0';
 
-  let nextLabel = 'Section complete';
+  let nextLabel = `${phase.label} complete`;
   if(next){
     nextLabel = `${next.ex.name} — set ${next.setNum}`;
   } else {
@@ -456,7 +495,7 @@ function renderGuidedSection(day){
   return `<div class="section-label">${phase.label}</div>
     <div class="guided-card">
       <div class="guided-meta">
-        <div class="phase-tag">${phase.label}</div>
+        <div class="phase-tag ${phase.phaseKey}">${phase.label}</div>
         <div class="round-tag">Set ${setNum} of ${ex.sets}</div>
       </div>
       <div class="guided-ex-name">${ex.name}</div>
@@ -526,28 +565,28 @@ function renderTrain(){
   </div>`;
 
   if(day.recovery){
-    html += `<div class="section-label">Recovery Routine</div>`;
-    day.routine.forEach((r,i)=> html += makeCheckItem(r, 'routine_'+i));
-    html += `<div class="section-label">Weekly Reflection</div><div class="reflect">`;
+    html += `<div class="section-label">🌿 Recovery Routine</div>`;
+    (day.routine||[]).forEach((r,i)=> html += makeCheckItem(r, 'routine_'+i));
+    html += `<div class="section-label">📊 Weekly Reflection</div><div class="reflect">`;
     draft.reflect = draft.reflect || {};
-    day.reflection.forEach(r=>{
+    (day.reflection||[]).forEach(r=>{
       html += `<label>${r.label}</label><input type="text" data-reflect="${r.id}" value="${draft.reflect[r.id]||''}">`;
     });
     html += `</div>`;
   } else {
     if(day.warmup && day.warmup.length){
-      html += `<div class="section-label">Warm-Up</div>`;
+      html += `<div class="section-label">⚡ Warm-Up</div>`;
       day.warmup.forEach((w,i)=> html += makeCheckItem(w, 'warmup_'+i));
     }
 
     html += renderGuidedSection(day);
 
-    if(day.skillChoice){
-      html += `<div class="section-label">Skill Work — Choose One</div>`;
+    if(day.skillChoice && day.skillChoice.length){
+      html += `<div class="section-label">🎯 Skill Work — Choose One</div>`;
       day.skillChoice.forEach((s,i)=> html += makeCheckItem(s + ' (10 min)', 'skillchoice_'+i));
     }
     if(day.finisher && day.finisher.length){
-      html += `<div class="section-label">Finisher Circuit</div>`;
+      html += `<div class="section-label">🔥 Finisher Circuit</div>`;
       day.finisher.forEach((f,i)=> html += makeCheckItem(f, 'finisher_'+i));
     }
   }
@@ -604,7 +643,7 @@ function wireTrainEvents(){
 function saveSession(){
   const day = getDay(selectedDayId);
   const exercises = {};
-  (day.main||[]).concat(day.skill||[]).forEach(ex=>{
+  (day.main||[]).concat(day.core||[]).concat(day.skill||[]).forEach(ex=>{
     if(draft[ex.id]){
       const sets = draft[ex.id].filter(s=>s.value!=='' && s.value!=null);
       if(sets.length) exercises[ex.id] = { name: ex.name, unit: ex.unit, sets };
@@ -677,7 +716,7 @@ function renderHistory(){
   </div>`;
 
   const allExercises = [];
-  getCurrentPlan().forEach(day=>{ (day.main||[]).concat(day.skill||[]).forEach(ex=> allExercises.push(ex)); });
+  getCurrentPlan().forEach(day=>{ (day.main||[]).concat(day.core||[]).concat(day.skill||[]).forEach(ex=> allExercises.push(ex)); });
   const exWithData = allExercises.filter(ex => logs.some(l => l.exercises && l.exercises[ex.id]));
 
   if(exWithData.length === 0){
@@ -884,71 +923,36 @@ function exportPlan(planId) {
 
   if (Array.isArray(plan.data)) {
     plan.data.forEach(day => {
-      const exList = [];
       if (day.goal && !goals.includes(day.goal)) goals.push(day.goal);
       if (day.cue && !principles.includes(day.cue)) principles.push(day.cue);
 
-      if (day.warmup && Array.isArray(day.warmup)) {
-        day.warmup.forEach(w => {
-          exList.push({
-            name: `Warm-up: ${w}`,
-            sets: 1,
-            targetReps: '1 round',
-            restSeconds: 30,
-            notes: 'Warm-up preparation'
-          });
-        });
+      const dayRoutine = {
+        warmup: day.warmup || [],
+        main: (day.main || []).map(ex => ({
+          name: ex.name,
+          sets: ex.sets,
+          targetReps: ex.target,
+          restSeconds: ex.rest || 60,
+          notes: ex.note || ''
+        })),
+        core: (day.core || []).map(ex => ({
+          name: ex.name,
+          sets: ex.sets,
+          targetReps: ex.target,
+          restSeconds: ex.rest || 60,
+          notes: ex.note || ''
+        })),
+        finisher: day.finisher || [],
+        cue: day.cue || ''
+      };
+
+      if (day.recovery) {
+        dayRoutine.recovery = true;
+        dayRoutine.routine = day.routine || [];
+        dayRoutine.reflection = day.reflection || [];
       }
 
-      if (day.main && Array.isArray(day.main)) {
-        day.main.forEach(ex => {
-          exList.push({
-            name: ex.name,
-            sets: ex.sets,
-            targetReps: ex.target,
-            restSeconds: ex.rest || 60,
-            notes: ex.note || ''
-          });
-        });
-      }
-
-      if (day.skill && Array.isArray(day.skill)) {
-        day.skill.forEach(ex => {
-          exList.push({
-            name: `Skill: ${ex.name}`,
-            sets: ex.sets,
-            targetReps: ex.target,
-            restSeconds: ex.rest || 60,
-            notes: ex.note || 'Skill work'
-          });
-        });
-      }
-
-      if (day.finisher && Array.isArray(day.finisher)) {
-        day.finisher.forEach(f => {
-          exList.push({
-            name: `Finisher: ${f}`,
-            sets: 1,
-            targetReps: '1 round',
-            restSeconds: 45,
-            notes: 'Metabolic finisher'
-          });
-        });
-      }
-
-      if (day.recovery && day.routine && Array.isArray(day.routine)) {
-        day.routine.forEach(r => {
-          exList.push({
-            name: `Recovery: ${r}`,
-            sets: 1,
-            targetReps: '1 round',
-            restSeconds: 0,
-            notes: 'Active recovery'
-          });
-        });
-      }
-
-      routines[day.name || `Day ${day.num || 1}`] = exList;
+      routines[day.name || `Day ${day.num || 1}`] = dayRoutine;
     });
   }
 
@@ -956,7 +960,7 @@ function exportPlan(planId) {
     $schema: "http://json-schema.org/draft-07/schema#",
     planName: plan.name,
     description: goals[0] || `Workout routine: ${plan.name}`,
-    goals: goals.length ? goals.slice(0, 5) : ['Strength progression', 'Hypertrophy', 'Recovery optimization'],
+    goals: goals.length ? goals.slice(0, 5) : ['Strength progression', 'Core compression', 'Athletic conditioning'],
     principles: principles.length ? principles : ['1-2 RIR on compound sets', 'Progressive overload', 'Controlled tempo'],
     routines: routines,
     days: plan.data
@@ -1185,45 +1189,98 @@ function importAiPlanJson(jsonString) {
     const convertedPlan = [];
     const entries = Object.entries(routines);
 
-    entries.forEach(([dayName, exercises], idx) => {
+    function normalizeEx(ex, fallbackId) {
+      let name = ex.name || 'Exercise';
+      let sets = parseInt(ex.sets, 10) || 3;
+      let target = ex.targetReps || ex.target || '8-12 reps';
+      let note = ex.notes || ex.note || '';
+      let unit = (target.includes('sec') || target.includes('s hold') || target.includes('s') || target.includes('/side')) ? 'sec' : 'reps';
+      let rest = parseInt(ex.restSeconds || ex.rest, 10) || 60;
+      return {
+        id: ex.id || fallbackId,
+        name: name,
+        sets: sets,
+        target: target,
+        note: note,
+        unit: unit,
+        rest: rest
+      };
+    }
+
+    entries.forEach(([dayName, dayContent], idx) => {
       const dayId = weekdayIds[idx % 7];
       const dayNum = (idx % 7) + 1;
       let dayObj = {
         id: dayId,
         num: dayNum,
         name: dayName,
-        goal: parsed.description || `AI Workout routine for ${dayName}`,
+        goal: parsed.description || `Workout routine for ${dayName}`,
         warmup: [],
         main: [],
+        core: [],
         skill: [],
         finisher: [],
         cue: (parsed.principles && parsed.principles[0]) || 'Maintain proper form and 1-2 RIR.'
       };
 
-      if (Array.isArray(exercises)) {
-        exercises.forEach((ex, exIdx) => {
-          let name = ex.name || `Exercise ${exIdx+1}`;
-          let sets = parseInt(ex.sets, 10) || 3;
-          let target = ex.targetReps || ex.target || '8-12 reps';
-          let note = ex.notes || ex.note || '';
-          let unit = (target.includes('sec') || target.includes('s hold') || target.includes('s')) ? 'sec' : 'reps';
-          let rest = parseInt(ex.restSeconds || ex.rest, 10) || 60;
+      if (dayContent && typeof dayContent === 'object' && !Array.isArray(dayContent)) {
+        if (dayContent.goal) dayObj.goal = dayContent.goal;
+        if (dayContent.cue) dayObj.cue = dayContent.cue;
+        if (dayContent.recovery) dayObj.recovery = true;
+        if (Array.isArray(dayContent.routine)) dayObj.routine = dayContent.routine;
+        if (Array.isArray(dayContent.reflection)) dayObj.reflection = dayContent.reflection;
 
-          if (name.toLowerCase().includes('warmup') || name.toLowerCase().includes('warm-up')) {
-            dayObj.warmup.push(`${name} — ${target}`);
+        if (Array.isArray(dayContent.warmup)) {
+          dayContent.warmup.forEach(w => {
+            if (typeof w === 'string') dayObj.warmup.push(w);
+            else if (w && w.name) dayObj.warmup.push(`${w.name}${w.targetReps ? ' — ' + w.targetReps : ''}`);
+          });
+        }
+
+        if (Array.isArray(dayContent.main)) {
+          dayContent.main.forEach((ex, exIdx) => {
+            dayObj.main.push(normalizeEx(ex, `${dayId}_main_${exIdx+1}`));
+          });
+        }
+
+        if (Array.isArray(dayContent.core)) {
+          dayContent.core.forEach((ex, exIdx) => {
+            dayObj.core.push(normalizeEx(ex, `${dayId}_core_${exIdx+1}`));
+          });
+        }
+
+        if (Array.isArray(dayContent.skill)) {
+          dayContent.skill.forEach((ex, exIdx) => {
+            dayObj.skill.push(normalizeEx(ex, `${dayId}_skill_${exIdx+1}`));
+          });
+        }
+
+        if (Array.isArray(dayContent.finisher)) {
+          dayContent.finisher.forEach(f => {
+            if (typeof f === 'string') dayObj.finisher.push(f);
+            else if (f && f.name) dayObj.finisher.push(`${f.name}${f.targetReps ? ' — ' + f.targetReps : ''}`);
+          });
+        }
+      } else if (Array.isArray(dayContent)) {
+        dayContent.forEach((ex, exIdx) => {
+          const sec = (ex.section || '').toLowerCase();
+          const name = ex.name || `Exercise ${exIdx+1}`;
+          const nameLower = name.toLowerCase();
+
+          if (sec === 'warmup' || nameLower.includes('warmup') || nameLower.includes('warm-up')) {
+            dayObj.warmup.push(`${name}${ex.targetReps || ex.target ? ' — ' + (ex.targetReps || ex.target) : ''}`);
+          } else if (sec === 'finisher' || nameLower.includes('finisher') || nameLower.includes('circuit')) {
+            dayObj.finisher.push(`${name}${ex.targetReps || ex.target ? ' — ' + (ex.targetReps || ex.target) : ''}`);
+          } else if (sec === 'core' || nameLower.includes('knee raise') || nameLower.includes('hollow') || nameLower.includes('vacuum') || nameLower.includes('l-sit') || nameLower.includes('plank')) {
+            dayObj.core.push(normalizeEx(ex, `${dayId}_core_${exIdx+1}`));
+          } else if (sec === 'skill') {
+            dayObj.skill.push(normalizeEx(ex, `${dayId}_skill_${exIdx+1}`));
           } else {
-            dayObj.main.push({
-              id: `${dayId}_ex_${exIdx+1}`,
-              name: name,
-              sets: sets,
-              target: target,
-              note: note,
-              unit: unit,
-              rest: rest
-            });
+            dayObj.main.push(normalizeEx(ex, `${dayId}_main_${exIdx+1}`));
           }
         });
       }
+
       convertedPlan.push(dayObj);
     });
 

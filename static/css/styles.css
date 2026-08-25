@@ -461,6 +461,24 @@
     border-radius: 6px;
   }
 
+  .phase-tag.main {
+    color: var(--accent);
+    background: var(--accent-dim);
+    box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.2);
+  }
+
+  .phase-tag.core {
+    color: var(--secondary);
+    background: var(--secondary-dim);
+    box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+  }
+
+  .phase-tag.skill {
+    color: #c084fc;
+    background: rgba(192, 132, 252, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(192, 132, 252, 0.2);
+  }
+
   .round-tag {
     font-family: var(--font-mono);
     font-size: 11px;

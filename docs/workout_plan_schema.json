@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "WorkoutPlan",
-  "description": "JSON Schema for AI-generated workout plans importable into Workout Tracker",
+  "description": "JSON Schema for workout plans with Warmup, Main, Core, and Finisher sections",
   "type": "object",
   "required": [
     "planName",
@@ -10,60 +10,142 @@
   "properties": {
     "planName": {
       "type": "string",
-      "description": "Name of the workout plan (e.g., 'Recovery-Optimized Calisthenics')"
+      "description": "Name of the workout plan (e.g., 'Week 12 — Modified Athletic Cut & Core')"
     },
     "description": {
       "type": "string",
-      "description": "Overview of the workout program"
+      "description": "Overview and primary goals of the workout program"
     },
     "goals": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "List of fitness or performance goals"
+      "description": "List of fitness, body composition, or performance targets"
     },
     "principles": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Key training principles (e.g., RIR, rest times, deload frequency)"
+      "description": "Progression principles, intensity guidelines (RIR), tempo, and recovery rules"
     },
     "routines": {
       "type": "object",
-      "description": "Dictionary of routine names mapped to lists of exercises",
+      "description": "Dictionary of routine/day names mapped to sectioned workouts (warmup, main, core, finisher) or exercise lists",
       "additionalProperties": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "required": [
-            "name",
-            "sets"
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Name of exercise, optionally including details or tempo cues"
-            },
-            "sets": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Total number of sets for this exercise"
-            },
-            "targetReps": {
-              "type": "string",
-              "description": "Target rep count or hold duration (e.g., '8-10', '20-30s')"
-            },
-            "restSeconds": {
-              "type": "integer",
-              "description": "Rest duration in seconds after each set"
-            },
-            "notes": {
-              "type": "string",
-              "description": "Execution notes, intensity targets (e.g., 1 RIR), or warm-up cues"
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Sectioned routine format with Warmup, Main, Core, and Finisher",
+            "properties": {
+              "warmup": {
+                "type": "array",
+                "items": {
+                  "type": ["string", "object"]
+                },
+                "description": "Warm-up exercises or checklist items"
+              },
+              "main": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/exercise"
+                },
+                "description": "Primary strength, pull, push, or leg compound exercises"
+              },
+              "core": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/exercise"
+                },
+                "description": "Core stability, compression, pelvic tilt, or isometric hold exercises"
+              },
+              "skill": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/exercise"
+                },
+                "description": "Optional skill practice movements (Handstand, L-Sit, Pistol Squats)"
+              },
+              "finisher": {
+                "type": "array",
+                "items": {
+                  "type": ["string", "object"]
+                },
+                "description": "Metabolic conditioning circuits, intervals, or endurance finishers"
+              },
+              "recovery": {
+                "type": "boolean",
+                "description": "Set to true for active recovery or full rest days"
+              },
+              "routine": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Light activity items for recovery days (e.g. 8k steps, mobility)"
+              },
+              "reflection": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "label": { "type": "string" }
+                  }
+                },
+                "description": "Weekly recovery metrics to record (sleep, soreness, measurements)"
+              },
+              "cue": {
+                "type": "string",
+                "description": "Mental cue or form reminder for the session"
+              }
             }
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/exercise"
+            },
+            "description": "Flat exercise list format with optional section property"
           }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "exercise": {
+      "type": "object",
+      "required": [
+        "name",
+        "sets"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of exercise"
+        },
+        "sets": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of sets"
+        },
+        "targetReps": {
+          "type": "string",
+          "description": "Target rep range or hold duration (e.g., '3-5 reps', '30-45s', '10-12/leg')"
+        },
+        "restSeconds": {
+          "type": "integer",
+          "description": "Rest duration in seconds after each set"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Execution cues, tempo, or RIR targets (e.g., '1-2 RIR', '6s descent')"
+        },
+        "section": {
+          "type": "string",
+          "enum": ["warmup", "main", "core", "skill", "finisher", "recovery"],
+          "description": "Section category when using flat array format"
         }
       }
     }
