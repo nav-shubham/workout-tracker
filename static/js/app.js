@@ -1132,7 +1132,107 @@ if (deletePlanBtn) {
   });
 }
 
-document.getElementById('closeAiModalBtn').addEventListener('click', closeAiModal);
+const MASTER_AI_PROMPT_TEMPLATE = `Please create a personalized workout plan for me formatted strictly as valid JSON adhering to the schema below so I can directly import it into my Workout Tracker web app.
+
+My details and goals:
+- Equipment available: [e.g. Pull-up bar, wooden parallettes, resistance bands]
+- Frequency: [e.g. 5 days/week]
+- Main goals: [e.g. Fat loss, pull-up progression, hip drive, core compression]
+
+JSON Schema & Format:
+{
+  "planName": "Descriptive Name of Your Plan",
+  "description": "Overview and primary focus of the program",
+  "goals": ["Goal 1", "Goal 2", "Goal 3"],
+  "principles": ["1-2 RIR on compound sets", "Controlled tempo", "Adequate rest"],
+  "routines": {
+    "Day 1 — Pull Power + Core": {
+      "warmup": [
+        "Dead hang — 30s (x2 rounds)",
+        "Band pull-aparts — x15 (x2 rounds)"
+      ],
+      "main": [
+        { "name": "Pull-ups", "sets": 6, "targetReps": "3-5 reps", "restSeconds": 90, "notes": "Full ROM" },
+        { "name": "Band Rows", "sets": 3, "targetReps": "12-15 reps", "restSeconds": 90 }
+      ],
+      "core": [
+        { "name": "Hanging Knee Raises", "sets": 4, "targetReps": "10-12 reps", "restSeconds": 60 },
+        { "name": "Hollow Body Hold", "sets": 4, "targetReps": "30-45s", "restSeconds": 60 }
+      ],
+      "finisher": [
+        "3 rounds — Mountain Climbers x30s",
+        "3 rounds — High Knees x30s",
+        "Rest 30s between rounds"
+      ],
+      "cue": "Explode up. Hold the hollow body tight."
+    },
+    "Day 2 — Legs & Glutes": {
+      "warmup": ["Leg swings + Hip circles", "Bodyweight Squats x15"],
+      "main": [
+        { "name": "Bulgarian Split Squats", "sets": 4, "targetReps": "10-12/leg", "restSeconds": 75 },
+        { "name": "Band Hip Thrusts", "sets": 4, "targetReps": "15-20 reps", "restSeconds": 60 }
+      ],
+      "core": [
+        { "name": "L-sit on Parallettes", "sets": 5, "targetReps": "15-25s", "restSeconds": 60 }
+      ],
+      "finisher": [
+        "4 rounds — Jump Squats x12",
+        "Rest 30s between rounds"
+      ],
+      "cue": "Drive through the heels."
+    },
+    "Day 3 — Rest / Active Recovery": {
+      "recovery": true,
+      "routine": [
+        "8k+ steps brisk walk",
+        "Light mobility / stretching"
+      ],
+      "reflection": [
+        { "id": "steps", "label": "Total steps today?" },
+        { "id": "soreness", "label": "Soreness level (1-10)?" }
+      ],
+      "cue": "Rest is where adaptation occurs."
+    }
+  }
+}
+
+Rules for Output:
+1. Output ONLY valid JSON inside a \`\`\`json \`\`\` block with no commentary.
+2. Divide workout days into "warmup", "main", "core", and "finisher" arrays.
+3. Every exercise in "main" and "core" MUST have: "name" (string), "sets" (integer), "targetReps" (string), and "restSeconds" (integer).
+4. For rest/recovery days, set "recovery": true and include a "routine" array and "reflection" questions.`;
+
+const closeAiModalBtn = document.getElementById('closeAiModalBtn');
+if (closeAiModalBtn) closeAiModalBtn.addEventListener('click', closeAiModal);
+
+const closeAiModalIconBtn = document.getElementById('closeAiModalIconBtn');
+if (closeAiModalIconBtn) closeAiModalIconBtn.addEventListener('click', closeAiModal);
+
+const copyAiPromptBtn = document.getElementById('copyAiPromptBtn');
+if (copyAiPromptBtn) {
+  copyAiPromptBtn.addEventListener('click', () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(MASTER_AI_PROMPT_TEMPLATE).then(() => {
+        showToast('AI prompt copied to clipboard!');
+      }).catch(() => {
+        fallbackCopyPrompt();
+      });
+    } else {
+      fallbackCopyPrompt();
+    }
+  });
+}
+
+function fallbackCopyPrompt() {
+  const ta = document.createElement('textarea');
+  ta.value = MASTER_AI_PROMPT_TEMPLATE;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  showToast('AI prompt copied to clipboard!');
+}
+
 document.getElementById('submitAiPlanBtn').addEventListener('click', ()=>{
   const text = document.getElementById('aiPlanJsonText').value.trim();
   if(!text) { alert("Please paste plan JSON content first."); return; }
